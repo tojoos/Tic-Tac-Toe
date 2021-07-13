@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.EndOfGameStageController">
+   <children>
+      <ImageView fitHeight="400.0" fitWidth="500.0">
+         <image>
+            <Image url="@graphics/endgamebackground.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="125.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Congratulations!">
+         <font>
+            <Font name="Onyx" size="62.0" />
+         </font>
+      </Text>
+      <Text fx:id="winnerField" fill="WHITE" layoutX="170.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X is a winner!" textAlignment="CENTER" wrappingWidth="159.2353515625">
+         <font>
+            <Font name="Onyx" size="39.0" />
+         </font>
+      </Text>
+      <Text fx:id="playAgainField" fill="WHITE" layoutX="125.0" layoutY="319.0" onMouseClicked="#onPlayAgainFieldClicked" onMouseEntered="#onPlayAgainFieldEntered" onMouseExited="#onPlayAgainFieldExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Play Again">
+         <font>
+            <Font name="Onyx" size="36.0" />
+         </font>
+      </Text>
+      <Text fx:id="exitField" fill="WHITE" layoutX="338.0" layoutY="319.0" onMouseClicked="#onExitFieldClicked" onMouseEntered="#onExitFieldEntered" onMouseExited="#onExitFieldExited" strokeType="OUTSIDE" strokeWidth="0.0" text="Exit">
+         <font>
+            <Font name="Onyx" size="36.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
