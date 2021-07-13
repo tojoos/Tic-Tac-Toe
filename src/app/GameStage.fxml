@@ -16,11 +16,25 @@
             <Image url="@graphics/backgroundAndTable.jpg" />
          </image>
       </ImageView>
-      <Text fx:id="newGameText" fill="WHITE" layoutX="978.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start a new game:">
-         <font>
-            <Font name="Onyx" size="53.0" />
-         </font>
-      </Text>
+      <Group>
+         <children>
+            <Label fx:id="onePlayerButton" layoutX="1030.0" layoutY="356.0" onMouseClicked="#onOnePlayerButtonClicked" onMouseEntered="#onOnePlayerButtonEntered" onMouseExited="#onOnePlayerButtonExited" prefHeight="27.0" prefWidth="127.0" text="one player vs AI" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Onyx" size="34.0" />
+               </font>
+            </Label>
+            <Text fx:id="newGameText" fill="WHITE" layoutX="978.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start a new game:">
+               <font>
+                  <Font name="Onyx" size="53.0" />
+               </font>
+            </Text>
+            <Label fx:id="twoPlayersButton" layoutX="1042.0" layoutY="410.0" onMouseClicked="#onTwoPlayersButtonClicked" onMouseEntered="#onTwoPlayersButtonEntered" onMouseExited="#onTwoPlayersButtonExited" prefHeight="37.0" prefWidth="103.0" text="two players" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Onyx" size="34.0" />
+               </font>
+            </Label>
+         </children>
+      </Group>
       <Text fill="WHITE" fontSmoothingType="LCD" layoutX="495.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tic-Tac-Toe" wrappingWidth="289.8289575964172">
          <font>
             <Font name="Onyx" size="96.0" />
@@ -227,16 +241,6 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <Label fx:id="onePlayerButton" layoutX="1030.0" layoutY="356.0" onMouseClicked="#onOnePlayerButtonClicked" onMouseEntered="#onOnePlayerButtonEntered" onMouseExited="#onOnePlayerButtonExited" prefHeight="27.0" prefWidth="127.0" text="one player vs AI" textAlignment="CENTER" textFill="WHITE">
-         <font>
-            <Font name="Onyx" size="34.0" />
-         </font>
-      </Label>
-      <Label fx:id="twoPlayersButton" layoutX="1042.0" layoutY="410.0" onMouseClicked="#onTwoPlayersButtonClicked" onMouseEntered="#onTwoPlayersButtonEntered" onMouseExited="#onTwoPlayersButtonExited" prefHeight="37.0" prefWidth="103.0" text="two players" textAlignment="CENTER" textFill="WHITE">
-         <font>
-            <Font name="Onyx" size="34.0" />
-         </font>
-      </Label>
       <Group fx:id="O_TurnGroup" layoutX="24.0" layoutY="111.0">
          <children>
             <Text fill="WHITE" layoutX="142.0" layoutY="233.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TURN" wrappingWidth="60.73046875">

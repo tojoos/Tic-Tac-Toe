@@ -3,18 +3,26 @@ package app;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class GameStageController implements Initializable {
@@ -24,6 +32,8 @@ public class GameStageController implements Initializable {
     private ArrayList<ImageView> Xs;
     private ArrayList<ImageView> Os;
     private ArrayList<Button> tileList;
+
+    private char [][] gameBoard = new char [3][3];
 
     @FXML
     private GridPane O_grid, X_grid, tileGrid;
@@ -43,6 +53,10 @@ public class GameStageController implements Initializable {
         clearTable();
         initializeLists();
 
+        for(int i = 0; i < 3; i++) {
+            Arrays.fill(gameBoard[i], '-');
+        }
+
         int i = 0;
         for(Node n : tileGrid.getChildren()) {
             if (n != null) {
@@ -50,15 +64,70 @@ public class GameStageController implements Initializable {
                 n.setOnMouseClicked(e -> {
                     if(booleanProperty1.get()) {
                         Os.get(finalI).setVisible(true);
+                        if(finalI>5) {
+                            gameBoard[2][finalI-6] = 'O';
+                        } else if(finalI > 2) {
+                            gameBoard[1][finalI-3] = 'O';
+                        } else {
+                            gameBoard[0][finalI] = 'O';
+                        }
                     } else {
                         Xs.get(finalI).setVisible(true);
+                        if(finalI>5) {
+                            gameBoard[2][finalI-6] = 'X';
+                        } else if(finalI > 2) {
+                            gameBoard[1][finalI-3] = 'X';
+                        } else {
+                            gameBoard[0][finalI] = 'X';
+                        }
                     }
                     tileList.get(finalI).setDisable(true);
                     booleanProperty1.setValue(!booleanProperty1.get());
                     booleanProperty2.setValue(!booleanProperty2.get());
+
+                    for(int k=0;k<3;k++) {
+                        for (int j = 0; j < 3; j++) {
+                            System.out.print(gameBoard[k][j] + " ");
+                        }
+                        System.out.println();
+                    }
+                    System.out.println();
+
+                    checkGameStatus('X');
+                    checkGameStatus('O');
                 });
             }
             i++;
+        }
+    }
+    private void checkGameStatus(char XorO) {
+        if((gameBoard[0][0] == XorO && gameBoard[1][1] == XorO && gameBoard[2][2] == XorO) ||
+           (gameBoard[0][2] == XorO && gameBoard[1][1] == XorO && gameBoard[3][0] == XorO) ||
+           (gameBoard[0][0] == XorO && gameBoard[0][1] == XorO && gameBoard[0][2] == XorO) ||
+           (gameBoard[1][0] == XorO && gameBoard[1][1] == XorO && gameBoard[1][2] == XorO) ||
+           (gameBoard[2][0] == XorO && gameBoard[2][1] == XorO && gameBoard[2][2] == XorO) ||
+           (gameBoard[0][0] == XorO && gameBoard[1][0] == XorO && gameBoard[2][0] == XorO) ||
+           (gameBoard[0][1] == XorO && gameBoard[1][1] == XorO && gameBoard[2][1] == XorO) ||
+           (gameBoard[0][2] == XorO && gameBoard[1][2] == XorO && gameBoard[2][2] == XorO)) {
+            showEndOfTheGameStage(XorO);
+        }
+    }
+
+    private void showEndOfTheGameStage(char XorO) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("EndOfGameStage.fxml")));
+            Parent root = loader.load();
+            EndOfGameStageController endOfGameStageController = loader.getController();
+            endOfGameStageController.transferWinner(XorO);
+            Stage endGameStage = new Stage();
+            endGameStage.setTitle("Tic-Tac-Toe");
+            endGameStage.initModality(Modality.APPLICATION_MODAL);
+            endGameStage.getIcons().add(new Image(Objects.requireNonNull(main.class.getResourceAsStream("graphics\\icon.png"))));
+            endGameStage.setScene(new Scene(root));
+            endGameStage.setResizable(false);
+            endGameStage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
