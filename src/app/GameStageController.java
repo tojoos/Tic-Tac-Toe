@@ -85,24 +85,32 @@ public class GameStageController implements Initializable {
                     booleanProperty1.setValue(!booleanProperty1.get());
                     booleanProperty2.setValue(!booleanProperty2.get());
 
-                    for(int k=0;k<3;k++) {
-                        for (int j = 0; j < 3; j++) {
-                            System.out.print(gameBoard[k][j] + " ");
+                    if(!checkGameStatus('X') && !checkGameStatus('O')) {
+                        if (isGameBoardFull()) {
+                            showEndOfTheGameStage('T');
                         }
-                        System.out.println();
                     }
-                    System.out.println();
 
-                    checkGameStatus('X');
-                    checkGameStatus('O');
                 });
             }
             i++;
         }
     }
-    private void checkGameStatus(char XorO) {
+
+    private boolean isGameBoardFull() {
+        int counter = 0;
+        for(int i=0;i<3;i++) {
+            for(int j=0;j<3;j++) {
+                if(gameBoard[i][j]=='-')
+                    counter++;
+            }
+        }
+        return counter == 0;
+    }
+
+    private boolean checkGameStatus(char XorO) {
         if((gameBoard[0][0] == XorO && gameBoard[1][1] == XorO && gameBoard[2][2] == XorO) ||
-           (gameBoard[0][2] == XorO && gameBoard[1][1] == XorO && gameBoard[3][0] == XorO) ||
+           (gameBoard[0][2] == XorO && gameBoard[1][1] == XorO && gameBoard[2][0] == XorO) ||
            (gameBoard[0][0] == XorO && gameBoard[0][1] == XorO && gameBoard[0][2] == XorO) ||
            (gameBoard[1][0] == XorO && gameBoard[1][1] == XorO && gameBoard[1][2] == XorO) ||
            (gameBoard[2][0] == XorO && gameBoard[2][1] == XorO && gameBoard[2][2] == XorO) ||
@@ -110,6 +118,9 @@ public class GameStageController implements Initializable {
            (gameBoard[0][1] == XorO && gameBoard[1][1] == XorO && gameBoard[2][1] == XorO) ||
            (gameBoard[0][2] == XorO && gameBoard[1][2] == XorO && gameBoard[2][2] == XorO)) {
             showEndOfTheGameStage(XorO);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -118,7 +129,8 @@ public class GameStageController implements Initializable {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("EndOfGameStage.fxml")));
             Parent root = loader.load();
             EndOfGameStageController endOfGameStageController = loader.getController();
-            endOfGameStageController.transferWinner(XorO);
+            endOfGameStageController.setWinner(XorO);
+            endOfGameStageController.transferGameStage((Stage) tileGrid.getScene().getWindow());
             Stage endGameStage = new Stage();
             endGameStage.setTitle("Tic-Tac-Toe");
             endGameStage.initModality(Modality.APPLICATION_MODAL);
