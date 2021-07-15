@@ -63,6 +63,8 @@ public class EndOfGameStageController {
 
     @FXML
     private void onExitFieldClicked() {
+        gameStage.hide();
+        playAgainField.getScene().getWindow().hide();
         System.exit(0);
     }
 

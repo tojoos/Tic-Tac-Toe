@@ -1,5 +1,6 @@
 package app;
 
+import javafx.animation.PauseTransition;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -14,9 +15,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,9 +30,11 @@ public class GameStageController implements Initializable {
 
     private BooleanProperty booleanProperty1 = new SimpleBooleanProperty(true);
     private BooleanProperty booleanProperty2 = new SimpleBooleanProperty(false);
+    private boolean isGameFinished = false;
     private ArrayList<ImageView> Xs;
     private ArrayList<ImageView> Os;
     private ArrayList<Button> tileList;
+    private int moveIter = 0;
 
     private char [][] gameBoard = new char [3][3];
 
@@ -39,7 +42,7 @@ public class GameStageController implements Initializable {
     private GridPane O_grid, X_grid, tileGrid;
 
     @FXML
-    private Group O_TurnGroup, X_TurnGroup, verticalLineGroup, horizontalLineGroup, crossLineGroup;
+    private Group O_TurnGroup, X_TurnGroup, newGameGroup, diffGroup;
 
     @FXML
     private ImageView X_0, X_1, X_2, X_3, X_4, X_5, X_6, X_7, X_8,
@@ -47,6 +50,12 @@ public class GameStageController implements Initializable {
 
     @FXML
     private Button tileButton0, tileButton1, tileButton2, tileButton3, tileButton4, tileButton5, tileButton6, tileButton7, tileButton8;
+
+    @FXML
+    private ImageView horzLine1, horzLine2, horzLine3, vertLine1, vertLine2, vertLine3, crossLine1, crossLine2;
+
+    @FXML
+    private Label onePlayerButton, twoPlayersButton, easyDiff, hardDiff;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -85,12 +94,15 @@ public class GameStageController implements Initializable {
                     booleanProperty1.setValue(!booleanProperty1.get());
                     booleanProperty2.setValue(!booleanProperty2.get());
 
-                    if(!checkGameStatus('X') && !checkGameStatus('O')) {
-                        if (isGameBoardFull()) {
-                            showEndOfTheGameStage('T');
+                    if(!isGameFinished) {
+                        if (!checkGameStatus('X') && !checkGameStatus('O')) {
+                            if (isGameBoardFull()) {
+                                showEndOfTheGameStage('T');
+                                for (Button b : tileList)
+                                    b.setDisable(true);
+                            }
                         }
                     }
-
                 });
             }
             i++;
@@ -117,7 +129,31 @@ public class GameStageController implements Initializable {
            (gameBoard[0][0] == XorO && gameBoard[1][0] == XorO && gameBoard[2][0] == XorO) ||
            (gameBoard[0][1] == XorO && gameBoard[1][1] == XorO && gameBoard[2][1] == XorO) ||
            (gameBoard[0][2] == XorO && gameBoard[1][2] == XorO && gameBoard[2][2] == XorO)) {
-            showEndOfTheGameStage(XorO);
+
+            for(Button b : tileList)
+                b.setDisable(true);
+
+            isGameFinished = true;
+
+            if(gameBoard[0][0] == XorO && gameBoard[1][1] == XorO && gameBoard[2][2] == XorO)
+                crossLine1.setVisible(true);
+            if(gameBoard[0][2] == XorO && gameBoard[1][1] == XorO && gameBoard[2][0] == XorO)
+                crossLine2.setVisible(true);
+            if(gameBoard[0][0] == XorO && gameBoard[0][1] == XorO && gameBoard[0][2] == XorO)
+                horzLine1.setVisible(true);
+            if(gameBoard[1][0] == XorO && gameBoard[1][1] == XorO && gameBoard[1][2] == XorO)
+                horzLine2.setVisible(true);
+            if(gameBoard[2][0] == XorO && gameBoard[2][1] == XorO && gameBoard[2][2] == XorO)
+                horzLine3.setVisible(true);
+            if(gameBoard[0][0] == XorO && gameBoard[1][0] == XorO && gameBoard[2][0] == XorO)
+                vertLine1.setVisible(true);
+            if(gameBoard[0][1] == XorO && gameBoard[1][1] == XorO && gameBoard[2][1] == XorO)
+                vertLine2.setVisible(true);
+            if(gameBoard[0][2] == XorO && gameBoard[1][2] == XorO && gameBoard[2][2] == XorO)
+                vertLine3.setVisible(true);
+            PauseTransition pt1 = new PauseTransition(Duration.millis(500));
+            pt1.playFromStart();
+            pt1.setOnFinished(e -> showEndOfTheGameStage(XorO));
             return true;
         } else {
             return false;
@@ -152,6 +188,15 @@ public class GameStageController implements Initializable {
                 }
             }
         }
+
+        vertLine1.setVisible(false);
+        vertLine2.setVisible(false);
+        vertLine3.setVisible(false);
+        horzLine1.setVisible(false);
+        horzLine2.setVisible(false);
+        horzLine3.setVisible(false);
+        crossLine1.setVisible(false);
+        crossLine2.setVisible(false);
     }
 
     private void initializeLists() {
@@ -172,7 +217,169 @@ public class GameStageController implements Initializable {
     }
 
     @FXML
-    private Label onePlayerButton, twoPlayersButton;
+    private void onTwoPlayersButtonClicked() {
+        newGameGroup.setVisible(false);
+        O_TurnGroup.visibleProperty().bind(booleanProperty1);
+        X_TurnGroup.visibleProperty().bind(booleanProperty2);
+        tileGrid.setDisable(false);
+    }
+
+    @FXML
+    private void onOnePlayerButtonClicked() {
+        newGameGroup.setVisible(false);
+        diffGroup.setVisible(true);
+    }
+
+    private void easyAIAlgorithm(){
+            PauseTransition pt1 = new PauseTransition(Duration.millis(750));
+            pt1.playFromStart();
+            tileGrid.setDisable(true);
+            pt1.setOnFinished(e -> {
+                tileGrid.setDisable(false);
+                int random = (int) (Math.random() * 8);
+                while (tileList.get(random).isDisabled()) {
+                    random = (int) (Math.random() * 8);
+                }
+
+                Xs.get(random).setVisible(true);
+                if (random > 5) {
+                    gameBoard[2][random - 6] = 'X';
+                } else if (random > 2) {
+                    gameBoard[1][random - 3] = 'X';
+                } else {
+                    gameBoard[0][random] = 'X';
+                }
+                tileList.get(random).setDisable(true);
+                booleanProperty1.setValue(!booleanProperty1.get());
+                booleanProperty2.setValue(!booleanProperty2.get());
+
+                if (!checkGameStatus('X') && !checkGameStatus('O')) {
+                    if (isGameBoardFull()) {
+                        showEndOfTheGameStage('T');
+                        for (Button b : tileList)
+                            b.setDisable(true);
+                    }
+                }
+                    });
+    }
+
+    private void hardAIAlgorithm() {
+        PauseTransition pt1 = new PauseTransition(Duration.millis(750));
+        pt1.playFromStart();
+        tileGrid.setDisable(true);
+        pt1.setOnFinished(e -> {
+            tileGrid.setDisable(false);
+
+            int bestMove = checkForBestMove();
+
+            Xs.get(bestMove).setVisible(true);
+            if (bestMove > 5) {
+                gameBoard[2][bestMove - 6] = 'X';
+            } else if (bestMove > 2) {
+                gameBoard[1][bestMove - 3] = 'X';
+            } else {
+                gameBoard[0][bestMove] = 'X';
+            }
+            tileList.get(bestMove).setDisable(true);
+            booleanProperty1.setValue(!booleanProperty1.get());
+            booleanProperty2.setValue(!booleanProperty2.get());
+
+            if (!checkGameStatus('X') && !checkGameStatus('O')) {
+                if (isGameBoardFull()) {
+                    showEndOfTheGameStage('T');
+                    for (Button b : tileList)
+                        b.setDisable(true);
+                }
+            }
+        });
+    }
+
+    private int checkForBestMove() {
+        int movePosition;
+        movePosition = checkForMove('X');
+        if (movePosition >= 0) {
+            return movePosition;
+        } else {
+            movePosition = checkForMove('O');
+            if (movePosition >= 0) {
+                return movePosition;
+            } else {
+                int random = (int) (Math.random() * 8);
+                while (tileList.get(random).isDisabled()) {
+                    random = (int) (Math.random() * 8);
+                }
+                return random;
+            }
+        }
+    }
+
+    private int checkForMove(char XorO) {
+        if((gameBoard[0][0]=='-' && gameBoard[1][1]==XorO && gameBoard[2][2]==XorO)
+            || (gameBoard[0][0]=='-' && gameBoard[0][1]==XorO && gameBoard[0][2]==XorO)
+            || (gameBoard[0][0]=='-' && gameBoard[1][0]==XorO && gameBoard[2][0]==XorO)) {
+            return 0;
+        } else if((gameBoard[0][1]=='-' && gameBoard[0][0]==XorO && gameBoard[0][2]==XorO)
+                || (gameBoard[0][1]=='-' && gameBoard[1][1]==XorO && gameBoard[2][1]==XorO)) {
+            return 1;
+        } else if((gameBoard[0][2]=='-' && gameBoard[0][0]==XorO && gameBoard[0][1]==XorO)
+                || (gameBoard[0][2]=='-' && gameBoard[1][1]==XorO && gameBoard[2][0]==XorO)
+                || (gameBoard[0][2]=='-' && gameBoard[1][2]==XorO && gameBoard[2][2]==XorO)) {
+            return 2;
+        } else if((gameBoard[1][0]=='-' && gameBoard[0][0]==XorO && gameBoard[2][0]==XorO)
+                || (gameBoard[1][0]=='-' && gameBoard[1][1]==XorO && gameBoard[1][2]==XorO)) {
+            return 3;
+        } else if((gameBoard[1][1]=='-' && gameBoard[0][0]==XorO && gameBoard[2][2]==XorO)
+                || (gameBoard[1][1]=='-' && gameBoard[0][2]==XorO && gameBoard[2][0]==XorO)
+                || (gameBoard[1][1]=='-' && gameBoard[0][1]==XorO && gameBoard[2][1]==XorO)
+                || (gameBoard[1][1]=='-' && gameBoard[1][0]==XorO && gameBoard[1][2]==XorO)) {
+            return 4;
+        } else if((gameBoard[1][2]=='-' && gameBoard[0][2]==XorO && gameBoard[2][2]==XorO)
+                || (gameBoard[1][2]=='-' && gameBoard[1][0]==XorO && gameBoard[1][1]==XorO)) {
+            return 5;
+        } else if((gameBoard[2][0]=='-' && gameBoard[0][0]==XorO && gameBoard[1][0]==XorO)
+                || (gameBoard[2][0]=='-' && gameBoard[2][1]==XorO && gameBoard[2][2]==XorO)
+                || (gameBoard[2][0]=='-' && gameBoard[1][1]==XorO && gameBoard[0][2]==XorO)) {
+            return 6;
+        } else if((gameBoard[2][1]=='-' && gameBoard[0][1]==XorO && gameBoard[1][1]==XorO)
+                || (gameBoard[2][1]=='-' && gameBoard[2][0]==XorO && gameBoard[2][2]==XorO)) {
+            return 7;
+        } else if((gameBoard[2][2]=='-' && gameBoard[1][1]==XorO && gameBoard[0][0]==XorO)
+                || (gameBoard[2][2]=='-' && gameBoard[2][1]==XorO && gameBoard[2][0]==XorO)
+                || (gameBoard[2][2]=='-' && gameBoard[0][2]==XorO && gameBoard[1][2]==XorO)) {
+            return 8;
+        } else {
+            return -1;
+        }
+    }
+
+
+    @FXML
+    private void onEasyDiffButtonClicked() {
+        startAnAIGame("EASY");
+    }
+
+    @FXML
+    private void onHardDiffButtonClicked() {
+        startAnAIGame("HARD");
+    }
+
+    private void startAnAIGame(String diff){
+        diffGroup.setVisible(false);
+        O_TurnGroup.visibleProperty().bind(booleanProperty1);
+        X_TurnGroup.visibleProperty().bind(booleanProperty2);
+        X_TurnGroup.visibleProperty().addListener(e -> {
+            if(X_TurnGroup.isVisible()) {
+                if (moveIter < 4) {
+                    if(diff.equals("EASY"))
+                        easyAIAlgorithm();
+                    else
+                        hardAIAlgorithm();
+                }
+                moveIter++;
+            }
+        });
+        tileGrid.setDisable(false);
+    }
 
     @FXML
     private void onTwoPlayersButtonEntered() {
@@ -195,33 +402,22 @@ public class GameStageController implements Initializable {
     }
 
     @FXML
-    private Text newGameText;
-
-    @FXML
-    private void onTwoPlayersButtonClicked() {
-        hideNewGameControls();
-        O_TurnGroup.visibleProperty().bind(booleanProperty1);
-        X_TurnGroup.visibleProperty().bind(booleanProperty2);
-        tileGrid.setDisable(false);
+    private void onEasyDiffButtonEntered() {
+        easyDiff.underlineProperty().setValue(true);
     }
 
     @FXML
-    private void onOnePlayerButtonClicked() {
-        hideNewGameControls();
-        O_TurnGroup.visibleProperty().bind(booleanProperty1);
-        X_TurnGroup.visibleProperty().bind(booleanProperty2);
-        tileGrid.setDisable(false);
+    private void onEasyDiffButtonExited() {
+        easyDiff.underlineProperty().setValue(false);
     }
 
-    private void hideNewGameControls() {
-        onePlayerButton.setVisible(false);
-        twoPlayersButton.setVisible(false);
-        newGameText.setVisible(false);
+    @FXML
+    private void onHardDiffButtonEntered() {
+        hardDiff.underlineProperty().setValue(true);
     }
 
-    private void showNewGameControls() {
-        onePlayerButton.setVisible(true);
-        twoPlayersButton.setVisible(true);
-        newGameText.setVisible(true);
+    @FXML
+    private void onHardDiffButtonExited() {
+        hardDiff.underlineProperty().setValue(false);
     }
 }

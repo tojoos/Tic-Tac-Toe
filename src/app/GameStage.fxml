@@ -11,14 +11,14 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.GameStageController">
    <children>
-      <ImageView fitHeight="720.0" fitWidth="1286.0">
+      <ImageView fitHeight="720.0" fitWidth="1286.0" layoutX="-3.0">
          <image>
             <Image url="@graphics/backgroundAndTable.jpg" />
          </image>
       </ImageView>
-      <Group>
+      <Group fx:id="newGameGroup">
          <children>
-            <Label fx:id="onePlayerButton" layoutX="1030.0" layoutY="356.0" onMouseClicked="#onOnePlayerButtonClicked" onMouseEntered="#onOnePlayerButtonEntered" onMouseExited="#onOnePlayerButtonExited" prefHeight="27.0" prefWidth="127.0" text="one player vs AI" textAlignment="CENTER" textFill="WHITE">
+            <Label fx:id="onePlayerButton" layoutX="1030.0" layoutY="373.0" onMouseClicked="#onOnePlayerButtonClicked" onMouseEntered="#onOnePlayerButtonEntered" onMouseExited="#onOnePlayerButtonExited" prefHeight="27.0" prefWidth="127.0" text="one player vs AI" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Onyx" size="34.0" />
                </font>
@@ -33,6 +33,11 @@
                   <Font name="Onyx" size="34.0" />
                </font>
             </Label>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="995.0" layoutY="301.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@graphics/decoration.png" />
+               </image>
+            </ImageView>
          </children>
       </Group>
       <Text fill="WHITE" fontSmoothingType="LCD" layoutX="495.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tic-Tac-Toe" wrappingWidth="289.8289575964172">
@@ -265,6 +270,82 @@
             <ImageView fitHeight="54.0" fitWidth="54.0" layoutX="84.0" layoutY="373.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@graphics/cross.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Group>
+      <Group fx:id="horizontalLines">
+         <children>
+            <ImageView fx:id="horzLine2" fitHeight="63.0" fitWidth="388.0" layoutX="441.0" layoutY="364.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" scaleY="0.6">
+               <image>
+                  <Image url="@graphics/crossing_line.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="horzLine3" fitHeight="63.0" fitWidth="388.0" layoutX="441.0" layoutY="494.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" scaleY="0.6">
+               <image>
+                  <Image url="@graphics/crossing_line.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="horzLine1" fitHeight="63.0" fitWidth="388.0" layoutX="441.0" layoutY="226.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" scaleY="0.6">
+               <image>
+                  <Image url="@graphics/crossing_line.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Group>
+      <Group fx:id="verticalLines">
+         <children>
+            <ImageView fx:id="vertLine1" fitHeight="63.0" fitWidth="388.0" layoutX="328.0" layoutY="370.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" rotate="90.0" scaleX="1.08" scaleY="0.6">
+               <image>
+                  <Image url="@graphics/crossing_line.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="vertLine3" fitHeight="63.0" fitWidth="388.0" layoutX="565.0" layoutY="370.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" rotate="90.0" scaleX="1.08" scaleY="0.6">
+               <image>
+                  <Image url="@graphics/crossing_line.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="vertLine2" fitHeight="63.0" fitWidth="388.0" layoutX="447.0" layoutY="370.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" rotate="90.0" scaleX="1.08" scaleY="0.6">
+               <image>
+                  <Image url="@graphics/crossing_line.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Group>
+      <Group fx:id="crossLines">
+         <children>
+            <ImageView fx:id="crossLine2" fitHeight="63.0" fitWidth="388.0" layoutX="438.0" layoutY="358.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" rotate="-47.0" scaleX="1.42" scaleY="0.6">
+               <image>
+                  <Image url="@graphics/crossing_line.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="crossLine1" fitHeight="63.0" fitWidth="388.0" layoutX="452.0" layoutY="368.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" rotate="47.0" scaleX="1.42" scaleY="0.6">
+               <image>
+                  <Image url="@graphics/crossing_line.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Group>
+      <Group fx:id="diffGroup" layoutX="1.0" layoutY="1.0" visible="false">
+         <children>
+            <Label fx:id="easyDiff" layoutX="1075.0" layoutY="360.0" onMouseClicked="#onEasyDiffButtonClicked" onMouseEntered="#onEasyDiffButtonEntered" onMouseExited="#onEasyDiffButtonExited" prefHeight="37.0" prefWidth="35.0" text="easy" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Onyx" size="34.0" />
+               </font>
+            </Label>
+            <Text fx:id="newGameText1" fill="WHITE" layoutX="978.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select difficulty:" textAlignment="CENTER" wrappingWidth="228.3935546875">
+               <font>
+                  <Font name="Onyx" size="53.0" />
+               </font>
+            </Text>
+            <Label fx:id="hardDiff" layoutX="1074.0" layoutY="407.0" onMouseClicked="#onHardDiffButtonClicked" onMouseEntered="#onHardDiffButtonEntered" onMouseExited="#onHardDiffButtonExited" prefHeight="37.0" prefWidth="38.0" text="hard" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Onyx" size="34.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="995.0" layoutY="301.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@graphics/decoration.png" />
                </image>
             </ImageView>
          </children>
