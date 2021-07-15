@@ -26,9 +26,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-/*
-*  TRYB JEDNOOSOBOWY VS AI!*/
-
 public class GameStageController implements Initializable {
 
     private BooleanProperty booleanProperty1 = new SimpleBooleanProperty(true);
@@ -233,21 +230,57 @@ public class GameStageController implements Initializable {
         diffGroup.setVisible(true);
     }
 
-    private void stupidAICode(){
-            int random = (int) (Math.random() * 8);
-            while (tileList.get(random).isDisabled()) {
-                random = (int) (Math.random() * 8);
-            }
+    private void easyAIAlgorithm(){
+            PauseTransition pt1 = new PauseTransition(Duration.millis(750));
+            pt1.playFromStart();
+            tileGrid.setDisable(true);
+            pt1.setOnFinished(e -> {
+                tileGrid.setDisable(false);
+                int random = (int) (Math.random() * 8);
+                while (tileList.get(random).isDisabled()) {
+                    random = (int) (Math.random() * 8);
+                }
 
-            Xs.get(random).setVisible(true);
-            if (random > 5) {
-                gameBoard[2][random - 6] = 'X';
-            } else if (random > 2) {
-                gameBoard[1][random - 3] = 'X';
+                Xs.get(random).setVisible(true);
+                if (random > 5) {
+                    gameBoard[2][random - 6] = 'X';
+                } else if (random > 2) {
+                    gameBoard[1][random - 3] = 'X';
+                } else {
+                    gameBoard[0][random] = 'X';
+                }
+                tileList.get(random).setDisable(true);
+                booleanProperty1.setValue(!booleanProperty1.get());
+                booleanProperty2.setValue(!booleanProperty2.get());
+
+                if (!checkGameStatus('X') && !checkGameStatus('O')) {
+                    if (isGameBoardFull()) {
+                        showEndOfTheGameStage('T');
+                        for (Button b : tileList)
+                            b.setDisable(true);
+                    }
+                }
+                    });
+    }
+
+    private void hardAIAlgorithm() {
+        PauseTransition pt1 = new PauseTransition(Duration.millis(750));
+        pt1.playFromStart();
+        tileGrid.setDisable(true);
+        pt1.setOnFinished(e -> {
+            tileGrid.setDisable(false);
+
+            int bestMove = checkForBestMove();
+
+            Xs.get(bestMove).setVisible(true);
+            if (bestMove > 5) {
+                gameBoard[2][bestMove - 6] = 'X';
+            } else if (bestMove > 2) {
+                gameBoard[1][bestMove - 3] = 'X';
             } else {
-                gameBoard[0][random] = 'X';
+                gameBoard[0][bestMove] = 'X';
             }
-            tileList.get(random).setDisable(true);
+            tileList.get(bestMove).setDisable(true);
             booleanProperty1.setValue(!booleanProperty1.get());
             booleanProperty2.setValue(!booleanProperty2.get());
 
@@ -258,7 +291,67 @@ public class GameStageController implements Initializable {
                         b.setDisable(true);
                 }
             }
+        });
     }
+
+    private int checkForBestMove() {
+        int movePosition;
+        movePosition = checkForMove('X');
+        if (movePosition >= 0) {
+            return movePosition;
+        } else {
+            movePosition = checkForMove('O');
+            if (movePosition >= 0) {
+                return movePosition;
+            } else {
+                int random = (int) (Math.random() * 8);
+                while (tileList.get(random).isDisabled()) {
+                    random = (int) (Math.random() * 8);
+                }
+                return random;
+            }
+        }
+    }
+
+    private int checkForMove(char XorO) {
+        if((gameBoard[0][0]=='-' && gameBoard[1][1]==XorO && gameBoard[2][2]==XorO)
+            || (gameBoard[0][0]=='-' && gameBoard[0][1]==XorO && gameBoard[0][2]==XorO)
+            || (gameBoard[0][0]=='-' && gameBoard[1][0]==XorO && gameBoard[2][0]==XorO)) {
+            return 0;
+        } else if((gameBoard[0][1]=='-' && gameBoard[0][0]==XorO && gameBoard[0][2]==XorO)
+                || (gameBoard[0][1]=='-' && gameBoard[1][1]==XorO && gameBoard[2][1]==XorO)) {
+            return 1;
+        } else if((gameBoard[0][2]=='-' && gameBoard[0][0]==XorO && gameBoard[0][1]==XorO)
+                || (gameBoard[0][2]=='-' && gameBoard[1][1]==XorO && gameBoard[2][0]==XorO)
+                || (gameBoard[0][2]=='-' && gameBoard[1][2]==XorO && gameBoard[2][2]==XorO)) {
+            return 2;
+        } else if((gameBoard[1][0]=='-' && gameBoard[0][0]==XorO && gameBoard[2][0]==XorO)
+                || (gameBoard[1][0]=='-' && gameBoard[1][1]==XorO && gameBoard[1][2]==XorO)) {
+            return 3;
+        } else if((gameBoard[1][1]=='-' && gameBoard[0][0]==XorO && gameBoard[2][2]==XorO)
+                || (gameBoard[1][1]=='-' && gameBoard[0][2]==XorO && gameBoard[2][0]==XorO)
+                || (gameBoard[1][1]=='-' && gameBoard[0][1]==XorO && gameBoard[2][1]==XorO)
+                || (gameBoard[1][1]=='-' && gameBoard[1][0]==XorO && gameBoard[1][2]==XorO)) {
+            return 4;
+        } else if((gameBoard[1][2]=='-' && gameBoard[0][2]==XorO && gameBoard[2][2]==XorO)
+                || (gameBoard[1][2]=='-' && gameBoard[1][0]==XorO && gameBoard[1][1]==XorO)) {
+            return 5;
+        } else if((gameBoard[2][0]=='-' && gameBoard[0][0]==XorO && gameBoard[1][0]==XorO)
+                || (gameBoard[2][0]=='-' && gameBoard[2][1]==XorO && gameBoard[2][2]==XorO)
+                || (gameBoard[2][0]=='-' && gameBoard[1][1]==XorO && gameBoard[0][2]==XorO)) {
+            return 6;
+        } else if((gameBoard[2][1]=='-' && gameBoard[0][1]==XorO && gameBoard[1][1]==XorO)
+                || (gameBoard[2][1]=='-' && gameBoard[2][0]==XorO && gameBoard[2][2]==XorO)) {
+            return 7;
+        } else if((gameBoard[2][2]=='-' && gameBoard[1][1]==XorO && gameBoard[0][0]==XorO)
+                || (gameBoard[2][2]=='-' && gameBoard[2][1]==XorO && gameBoard[2][0]==XorO)
+                || (gameBoard[2][2]=='-' && gameBoard[0][2]==XorO && gameBoard[1][2]==XorO)) {
+            return 8;
+        } else {
+            return -1;
+        }
+    }
+
 
     @FXML
     private void onEasyDiffButtonClicked() {
@@ -278,15 +371,14 @@ public class GameStageController implements Initializable {
             if(X_TurnGroup.isVisible()) {
                 if (moveIter < 4) {
                     if(diff.equals("EASY"))
-                        stupidAICode();
-                    else;
-
+                        easyAIAlgorithm();
+                    else
+                        hardAIAlgorithm();
                 }
                 moveIter++;
             }
         });
         tileGrid.setDisable(false);
-
     }
 
     @FXML
